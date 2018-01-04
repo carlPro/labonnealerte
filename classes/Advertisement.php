@@ -1,9 +1,6 @@
 <?php 
 
-/**
- * TODO rename name file
- * Advertissement class
- */
+namespace labonnealerte\Advertissement;
 
 class Advertisement 
 {
@@ -11,11 +8,17 @@ class Advertisement
     private int minute;
     private int second;
     private string title;
-
-    public function __construct() {
-
+    
+    public function __construct(int ip_hour, int ip_minute, int ip_second, string ip_title) {
+        $this->hour = ip_hour;
+        $this->minute = ip_minute;
+        $this->second = ip_second;
+        $this->title = ip_title;
     }
 
+    /**
+     * Getters and Setters
+     */
     public function setHour(int $ip_hour) {
         $this->hour = $ip_hour;
     }
@@ -42,5 +45,13 @@ class Advertisement
 
     public function setTitle(string $ip_title) {
         $this->title = $ip_title;
+    }
+
+    public function getTitle() {
+        return $this->title;
+    }
+
+    public function test() {
+        return "c'est un objet advertisement";
     }
 }
