@@ -1,0 +1,26 @@
+Limitation à 5 (articlesnew et articleold) pour ne pas gérer les cas ou les annonces de la deuxième page revienne sur la première !
+articlesnew[] = getlesarticlesnew();
+articleold[] = getlesarticlesold();
+
+// Aucun changement on ne fait rien
+if (articlenew == articleold) {
+    exit();
+}
+
+articlesalerte = new array();
+foreach (articlesnew as cpt => unarticlenew) {
+    if (unarticlenew->notIn(articleold)) {
+        articlesalerte[] = unarticlenew;
+    }
+}
+
+// Dans l'objet article
+function notIn(tbArticleOld) {
+    founded = false;
+    foreach (tbArticleOld as unarticleold) {
+        if (unarticleold == this) {
+            founded = true;
+        }
+    }
+    return !founded;
+}

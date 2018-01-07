@@ -1,11 +1,11 @@
 <?php
 
-namespace labonnealerte\Page;
+namespace labonnealerte\classes;
 
 class Page 
 {
-    private array tbAvertissement;
-    private string url;
+    private $tbAvertissement;
+    private $url;
 
     public function __construct() {
 
@@ -15,8 +15,8 @@ class Page
 
     }
 
-    public function setUrl(string ip_url) {
-        $this->url = ip_url;
+    public function setUrl($ip_url) {
+        $this->url = $ip_url;
     }
 
     public function getUrl() {

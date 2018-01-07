@@ -1,19 +1,19 @@
 <?php 
 
-namespace labonnealerte\Advertissement;
+namespace labonnealerte\classes;
 
 class Advertisement 
 {
-    private int hour;
-    private int minute;
-    private int second;
-    private string title;
+    private $hour;
+    private $minute;
+    private $second;
+    private $title;
     
-    public function __construct(int ip_hour, int ip_minute, int ip_second, string ip_title) {
-        $this->hour = ip_hour;
-        $this->minute = ip_minute;
-        $this->second = ip_second;
-        $this->title = ip_title;
+    public function __construct(int $ip_hour, int $ip_minute, int $ip_second, string $ip_title) {
+        $this->hour = $ip_hour;
+        $this->minute = $ip_minute;
+        $this->second = $ip_second;
+        $this->title = $ip_title;
     }
 
     /**
