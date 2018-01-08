@@ -8,8 +8,9 @@ class Autoloader
         spl_autoload_register(array(__CLASS__, 'autoload'));    
     }
     
-    public static function autoload($class) {
-        $parts = explode('\\', $class);
-        require '../classes/' . end($parts) . '.php';
+    public static function autoload($path) {
+        $parts = explode('\\', $path);
+        $className = end($parts);
+        require __LBA_CLASSES__ . $className . '.php';
     }
 } 

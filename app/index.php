@@ -5,9 +5,10 @@ namespace labonnealerte\app;
 use labonnealerte\classes\Page;
 use labonnealerte\classes\Advertisement;
 
-require './../autoload/Autoloader.php';
+require "/var/www/html/labonnealerte/autoload/path.php";
+require __LBA_AUTOLOAD__ . "Autoloader.php";
 
 Autoloader::register();
 
 $test = new Page();
-$test2 = new Advertisement();
+echo $test->test();
