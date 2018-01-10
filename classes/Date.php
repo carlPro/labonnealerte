@@ -10,7 +10,7 @@ class Date
     private $hour;
     private $minute;
     private $second;
-    
+
     public function __construct($ip_year, $ip_month, $ip_day, $ip_hour, $ip_minute, $ip_second) {
         $this->year = $ip_year;
         $this->month = $ip_month;
@@ -29,7 +29,7 @@ class Date
     }
 
     public function getMonth() {
-        return $this->month();
+        return $this->month;
     }
 
     public function setMonth($ip_month) {

@@ -2,53 +2,28 @@
 
 namespace labonnealerte\classes;
 
+use labonnealerte\classes\Date;
+
 class Advertisement 
 {
-    private $hour;
-    private $minute;
-    private $second;
+    private $date;
     private $title;
-    
-    public function __construct(int $ip_hour, int $ip_minute, int $ip_second, string $ip_title) {
-        $this->hour = $ip_hour;
-        $this->minute = $ip_minute;
-        $this->second = $ip_second;
+
+    public function __construct($ip_date, $ip_title) {
         $this->title = $ip_title;
+        $this->date = $ip_date;
     }
 
-    /**
-     * Getters and Setters
-     */
-    public function setHour(int $ip_hour) {
-        $this->hour = $ip_hour;
-    }
-
-    public function getHour() {
-        return $this->hour;
-    }
-
-    public function setMinute(int $ip_minute) {
-        $this->ip_minute = $ip_minute;
-    }
-
-    public function getMinute() {
-        return $this->minute;
-    }
-
-    public function setSecond(int $ip_second) {
-        $this->second = $ip_second;
-    }
-
-    public function getSecond() {
-        return $this->second;
-    }
-
-    public function setTitle(string $ip_title) {
+    public function setTitle($ip_title) {
         $this->title = $ip_title;
     }
 
     public function getTitle() {
         return $this->title;
+    }
+
+    public function getDate() {
+        return $this->date;
     }
 
     public function test() {
