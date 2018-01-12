@@ -2,13 +2,7 @@
 
 namespace labonnealerte\app;
 
-use labonnealerte\classes\Page;
-use labonnealerte\classes\Advertisement;
+require 'init.php';
 
-require "/var/www/html/labonnealerte/autoload/path.php";
-require __LBA_AUTOLOAD__ . "Autoloader.php";
+use labonnealerte\classes\{Advertisement, Date, Page};
 
-Autoloader::register();
-
-$test = new Page();
-echo $test->test();
