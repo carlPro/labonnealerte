@@ -2,20 +2,23 @@
 
 namespace labonnealerte\app;
 
-class Autoloader 
+class ClassAutoloader 
 {
    public static function register() {
       spl_autoload_register(array(__CLASS__, 'autoload'));    
    }
 
    public static function autoload($namespace) {
-      error_log($namespace);
-      $class = Autoloader::getClass($namespace);
-      require __LBA_CLASSES__ . $class . '.php';
+      $class = self::getClass($namespace);
+      $relativePath = self::convertToPath($namespace);
+      require __ROOT_PATH__ . $relativePath . '.php';
    }
 
    private static function getClass($namespace) {
       $parts = explode('\\', $namespace);
       return end($parts);
+   }
+   private static function convertToPath($namespace) {
+      return str_replace('\\', '/', $namespace);
    }
 } 
