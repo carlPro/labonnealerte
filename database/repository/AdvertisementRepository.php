@@ -6,5 +6,10 @@ use labonnealerte\database\DatabaseConnect;
 
 class AdvertisementRepository
 {
+   private $dbh;
 
+   public function __construct() {
+      $this->dbh = DatabaseConnect::getConnection();
+   }
+   
 }

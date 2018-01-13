@@ -18,6 +18,7 @@ class ClassAutoloader
       $parts = explode('\\', $namespace);
       return end($parts);
    }
+
    private static function convertToPath($namespace) {
       return str_replace('\\', '/', $namespace);
    }
