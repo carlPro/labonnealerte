@@ -6,3 +6,6 @@ V0.1 features :
 - Autoload
 - Constant path
 - Constant database
+- Update connecting infos 
+- Add db repository
+- Set connection to PDO object
