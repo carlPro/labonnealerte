@@ -11,7 +11,7 @@ namespace labonnealerte\app;
  *    - Constant database
  */
 
-require "/var/www/html/labonnealerte/autoload/Path.php";
+require dirname(dirname(__FILE__)) . "/autoload/Path.php";
 require __LBA_AUTOLOAD__ . "ClassAutoloader.php";
 require __LBA_DATABASE__ . "Config.php";
 
