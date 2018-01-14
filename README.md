@@ -9,3 +9,7 @@ V0.1 features :
 - Update connecting infos 
 - Add db repository
 - Set connection to PDO object
+- Relative path for implement on other pc's
+- Show a web page with curl
+- Build object for browse the page nativly
+- Killing html5 error when I build DomDocument

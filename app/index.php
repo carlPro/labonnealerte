@@ -9,5 +9,5 @@ use labonnealerte\database\DatabaseConnect;
 use labonnealerte\database\repository\{AdvertisementRepository, DateRepository, PageRepository};
 use labonnealerte\scrapper\LbaScrapper;
 
-$page = new LbaScrapper("http://php.net/manual/fr/language.oop5.decon.php");
-echo $page->getContent();
+$page = new LbaScrapper("https://www.leboncoin.fr/annonces/offres/bourgogne/");
+var_dump($page->getContent());
