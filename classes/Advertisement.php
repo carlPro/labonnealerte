@@ -2,16 +2,16 @@
 
 namespace labonnealerte\classes;
 
-use labonnealerte\classes\Date;
+use labonnealerte\classes\Hour;
 
 class Advertisement 
 {
-    private $date;
+    private $hour;
     private $title;
 
-    public function __construct($ip_date, $ip_title) {
+    public function __construct($ip_hour, $ip_title) {
         $this->title = $ip_title;
-        $this->date = $ip_date;
+        $this->hour = $ip_hour;
     }
 
     public function setTitle($ip_title) {
@@ -22,8 +22,8 @@ class Advertisement
         return $this->title;
     }
 
-    public function getDate() {
-        return $this->date;
+    public function getHour() {
+        return $this->hour;
     }
 
     public function test() {

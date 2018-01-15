@@ -2,7 +2,7 @@
 
 namespace labonnealerte\database\repository;
 
-class PageRepository extends BaseRepository
+class HourRepository extends BaseRepository
 {
-
+   
 }

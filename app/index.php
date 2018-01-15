@@ -9,5 +9,5 @@ use labonnealerte\database\DatabaseConnect;
 use labonnealerte\database\repository\{AdvertisementRepository, DateRepository, PageRepository};
 use labonnealerte\scrapper\LbaScrapper;
 
-$page = new LbaScrapper("https://www.leboncoin.fr/annonces/offres/bourgogne/");
-var_dump($page->getContent());
+$scrapper = new LbaScrapper("https://www.leboncoin.fr/materiel_agricole/offres/bourgogne/?th=1");
+echo var_dump($scrapper->getPage());

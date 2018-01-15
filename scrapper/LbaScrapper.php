@@ -2,10 +2,15 @@
 
 namespace labonnealerte\scrapper;
 
+use labonnealerte\classes\Advertisement;
+use labonnealerte\classes\Hour;
+use labonnealerte\classes\Page;
+
 class LbaScrapper extends BaseScrapper
 {
    private $url;
    private $xpath;
+   private $page;
 
    /******************************************************************************
     * Contruct the dom object with current url and build the DomX for scrapping, * 
@@ -47,23 +52,79 @@ class LbaScrapper extends BaseScrapper
 
    // Get Page with who have been created in classes/ todo
    public function getPage() {
-
+      $tbAvertisement = $this->getAllAdvertisement();
+      return new Page($tbAvertisement, $this->url);
    }
 
-   // Get Advertisement object who have been created in classes/ todo
-   public function getAdvertisement() {
+   public function getAllAdvertisement() {
+      $titles = $this->getAllTitle();
+      $hours = $this->getAllHour();
+      $advertissements = array();
 
+      if (count($titles) == count($hours)) {
+         for ($i = 0; $i < count($titles); $i++) {
+            $advertissement = new Advertisement($hours[$i], $titles[$i]);
+            $advertissements[] = $advertissement;
+         }
+      }
+      return $advertissements;
    }
 
    // Get Date object who have been created in classes/ todo
-   public function getDate() {
+   public function getAllHour() {
+      $allHour = $this->getContentNodeToArray("//aside[@class='item_absolute']/p");
+      $allHour = $this->clearEmptyData($allHour);
+      $allHourRes = array();
 
+      foreach ($allHour as $oneDateString) {
+         $fullDateString = substr(trim($oneDateString), -5);
+         $HourString = substr($fullDateString, 0, 2);
+         $MinuteString = substr($fullDateString, -2);
+         $allHourRes[] = new Hour($HourString, $MinuteString);
+      }
+
+      return $allHourRes; 
    }
 
-   /***********************************************
-    * Desctruct the curlObject when it isn't used *
-    ***********************************************/
-   function __destruct() {
-      parent::__destruct();
+   public function getAllTitle() {
+      $allTitle = $this->getContentNodeToArray("//section[@class='item_infos']/h2[@class='item_title']");
+      return $this->clearEmptyData($allTitle);
+   }
+
+   public function clearEmptyData($array) {
+      $result = array();
+      foreach ($array as $oneItem) {
+         if (!$this->isWithoutCaracter($oneItem)) {
+            $result[] = $oneItem;
+         }
+      }
+      return $result;
+   }
+
+   public function isWithoutCaracter($var) {
+      // Delete this line if you want space(s) to count as not empty
+      $var = trim($var);
+      return (isset($var) === true && $var === '') ? true : false;
+   }
+
+   /********************
+    * XPath management *
+    ********************/
+   public function getContentNodeToArray($expression) {
+      return $this->xpathQueryToArray($this->xpath->query($expression));
+   }
+
+   public function xpathQueryToArray($elements) {
+      $tb = array();
+      if (!is_null($elements)) {
+         foreach ($elements as $element) {
+            $nodes = $element->childNodes;
+            foreach ($nodes as $node) {
+               $tb[] = $node->nodeValue . "\n";
+            }
+         }
+      }
+      return $tb;
    }
 }
+
