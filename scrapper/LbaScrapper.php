@@ -52,22 +52,24 @@ class LbaScrapper extends BaseScrapper
 
    // Get Page with who have been created in classes/ todo
    public function getPage() {
-      $tbAvertisement = $this->getAllAdvertisement();
-      return new Page($tbAvertisement, $this->url);
+      $page = new Page();
+      $page->setUrl($this->url);
+      $page->setTbAvertissement($this->getAllAdvertisement());
+      return $page;
    }
 
    public function getAllAdvertisement() {
-      $titles = $this->getAllTitle();
       $hours = $this->getAllHour();
-      $advertissements = array();
+      $titles = $this->getAllTitle();
+      $advertisements = array();
 
       if (count($titles) == count($hours)) {
          for ($i = 0; $i < count($titles); $i++) {
             $advertissement = new Advertisement($hours[$i], $titles[$i]);
-            $advertissements[] = $advertissement;
+            $advertisements[] = $advertissement;
          }
       }
-      return $advertissements;
+      return $advertisements;
    }
 
    // Get Date object who have been created in classes/ todo
@@ -80,16 +82,23 @@ class LbaScrapper extends BaseScrapper
          $fullDateString = substr(trim($oneDateString), -5);
          $HourString = substr($fullDateString, 0, 2);
          $MinuteString = substr($fullDateString, -2);
-         $allHourRes[] = new Hour($HourString, $MinuteString);
+         if (is_numeric($HourString) && is_numeric($MinuteString)) {
+            $allHourRes[] = new Hour($HourString, $MinuteString);
+         }
       }
-
       return $allHourRes; 
    }
 
    public function getAllTitle() {
       $allTitle = $this->getContentNodeToArray("//section[@class='item_infos']/h2[@class='item_title']");
-      return $this->clearEmptyData($allTitle);
+      $allTitleWithoutEmpty = $this->clearEmptyData($allTitle);
+      $allTitleClean = array();
+      foreach ($allTitleWithoutEmpty as $titleWithoutEmpty) {
+         $allTitleClean[] = trim($titleWithoutEmpty);
+      }
+      return $allTitleClean;
    }
+
 
    public function clearEmptyData($array) {
       $result = array();

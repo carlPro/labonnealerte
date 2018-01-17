@@ -9,22 +9,16 @@ class Page
     private $tbAvertissement;
     private $url;
 
-    /**
-     * Contructor
-     * @param array $ip_tbAvertissement Tableau if advertisement
-     * @param string $ip_url
-     */
-    public function __construct($ip_tbAvertissement, $ip_url) {
-        $this->tbAvertissement = $ip_tbAvertissement;
-        $this->url = $ip_url;
-    }
-
     /** 
      * setTbAdvertisement
      * @param array $ip_tbAdvertisement
      */
     public function setTbAvertissement($ip_tbAdvertisement) {
-        $tbAvertissement = $ip_tbAdvertisement;
+        $this->tbAvertissement = $ip_tbAdvertisement;
+    }
+
+    public function getTbAvertissement() {
+        return $this->tbAvertissement;
     }
 
     /**

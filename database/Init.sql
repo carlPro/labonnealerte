@@ -3,14 +3,18 @@
 
 USE lba;
 
+DROP TABLE IF EXISTS `Advertisement`;
+DROP TABLE IF EXISTS `Page`;
+DROP TABLE IF EXISTS `User`;
+
 CREATE TABLE `User` (
-   idUser INT PRIMARY KEY,
+   idUser INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
    name VARCHAR(25),
    mdp VARCHAR(25)
 );
 
 CREATE TABLE `Page` (
-   idPage INTEGER PRIMARY KEY,
+   idPage INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
    idUser INT,
    url VARCHAR(200),
 
@@ -18,7 +22,7 @@ CREATE TABLE `Page` (
 );
 
 CREATE TABLE `Advertisement` (
-   idAvertisement INTEGER PRIMARY KEY,
+   idAvertisement INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
    title VARCHAR(25),
    hour INTEGER,
    minute INTEGER,
@@ -26,3 +30,5 @@ CREATE TABLE `Advertisement` (
 
    FOREIGN KEY(idPage) REFERENCES Page(idPage)
 );
+
+INSERT INTO `User`(name, mdp) VALUE("fasteel", "fasteel");

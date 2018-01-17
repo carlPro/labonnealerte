@@ -10,8 +10,16 @@ use labonnealerte\database\repository\{AdvertisementRepository, PageRepository, 
 use labonnealerte\scrapper\LbaScrapper;
 
 $idUser = 1; // Todo last change this for retrieved POST data
-//$scrapper = new LbaScrapper("https://www.leboncoin.fr/materiel_agricole/offres/bourgogne/?th=1");
+$url = "https://www.leboncoin.fr/materiel_agricole/offres/bourgogne/?th=1";
 
-$repo = new UserRepository();
+$scrapper = new LbaScrapper($url);
 
-var_dump($repo->isUserGotPage($idUser));
+$page = $scrapper->getPage();
+$userRepository = new UserRepository();
+$pageRepository = new PageRepository();
+
+if ($userRepository->isUserGotPage($idUser)) {
+
+} else {
+   $pageRepository->createPage($idUser, $page);
+}
