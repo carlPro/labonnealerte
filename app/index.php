@@ -19,7 +19,7 @@ $userRepository = new UserRepository();
 $pageRepository = new PageRepository();
 
 if ($userRepository->isUserGotPage($idUser)) {
-
+   
 } else {
    $pageRepository->createPage($idUser, $page);
 }

@@ -12,7 +12,7 @@ class UserRepository extends BaseRepository
    public function isUserGotPage($idUser) {
       $sql_isUserGotPage = "" .
          "SELECT COUNT(*) as isUserGotPage " .
-         "FROM Page " .
+         "FROM Page INNER JOIN Advertisement ON  Page.idPage = Advertisement.idPage " .
          "WHERE idUser = :idUserSql";
 
       $param_isUserGotPage = array (

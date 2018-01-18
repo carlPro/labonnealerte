@@ -24,19 +24,12 @@ class PageRepository extends BaseRepository
             "FROM Page " .
             "WHERE Page.idUser = :idUser";
 
-            error_log($sql_createAdvertisement);
-
-
          $param_createAdvertisement = array (
             ":titleSql" => $advertisement->getTitle(),
-            ":hourSql" => $advertisement->getHour()->getHour(), // todo
+            ":hourSql" => $advertisement->getHour()->getHour(),
             ":minuteSql" => $advertisement->getHour()->getMinute(),
             ":idUser" => $idUser
          );
-                     error_log($advertisement->getTitle());
-            error_log($advertisement->getHour()->getHour());
-            error_log($advertisement->getHour()->getMinute());
-            error_log($idUser);
 
          $reqPrepare = $this->dbh->prepare($sql_createAdvertisement);
          $reqPrepare->execute($param_createAdvertisement);
