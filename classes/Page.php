@@ -2,23 +2,23 @@
 
 namespace labonnealerte\classes;
 
-use labonnealerte\classes\Advertisement;
+use labonnealerte\classes\{Advertisement, Date};
 
 class Page 
 {
-    private $tbAvertissement;
+    private $tbAvertisement;
     private $url;
 
     /** 
      * setTbAdvertisement
      * @param array $ip_tbAdvertisement
      */
-    public function setTbAvertissement($ip_tbAdvertisement) {
-        $this->tbAvertissement = $ip_tbAdvertisement;
+    public function setTbAvertisement($ip_tbAdvertisement) {
+        $this->tbAvertisement = $ip_tbAdvertisement;
     }
 
-    public function getTbAvertissement() {
-        return $this->tbAvertissement;
+    public function getTbAvertisement() {
+        return $this->tbAvertisement;
     }
 
     /**
@@ -35,5 +35,24 @@ class Page
      */
     public function getUrl() {
         return $this->url;
+    }
+
+    public static function isSame($pageBdd, $pageInternet) {
+        if ($pageBdd->getUrl() != $pageInternet->getUrl()) {
+            return false;
+        }
+
+        $pageBddAvertisement = $pageBdd->getTbAvertisement();
+        $pageInternetAvertisement = $pageInternet->getTbAvertisement();
+
+        foreach ($pageBddAvertisement as $key => $avertisementBdd) {
+            if ($avertisementBdd->getDate()->getHour() != $pageInternetAvertisement[$key]->getDate()->getHour()
+                || $avertisementBdd->getDate()->getMinute() != $pageInternetAvertisement[$key]->getDate()->getMinute()
+                || $avertisementBdd->getTitle() != $pageInternetAvertisement[$key]->getTitle()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

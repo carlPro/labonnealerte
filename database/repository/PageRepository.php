@@ -2,8 +2,17 @@
 
 namespace labonnealerte\database\repository;
 
+use labonnealerte\classes\Page;
+use labonnealerte\classes\Date;
+use labonnealerte\classes\Advertisement;
+
 class PageRepository extends BaseRepository
 {
+   /**
+    * createPage
+    * @param  int $idUser
+    * @param  int $page   
+    */
    public function createPage($idUser, $page) {
       $sql_createPage = "" .
          "INSERT INTO Page(idUser, url) " .
@@ -17,22 +26,15 @@ class PageRepository extends BaseRepository
       $reqPrepare = $this->dbh->prepare($sql_createPage);
       $reqPrepare->execute($param_createPage);
 
-      foreach ($page->getTbAvertissement() as $advertisement) {
-         $sql_createAdvertisement = "" .
-            "INSERT INTO Advertisement(title, hour, minute, idPage) " .
-            "SELECT :titleSql, :hourSql, :minuteSql, `idPage` " .
-            "FROM Page " .
-            "WHERE Page.idUser = :idUser";
+      foreach ($page->getTbAvertisement() as $advertisement) {
 
-         $param_createAdvertisement = array (
-            ":titleSql" => $advertisement->getTitle(),
-            ":hourSql" => $advertisement->getHour()->getHour(),
-            ":minuteSql" => $advertisement->getHour()->getMinute(),
-            ":idUser" => $idUser
+         $advertisementRepo = new AdvertisementRepository();
+         $advertisementRepo->insertAdvertisement(
+            $advertisement->getTitle(),
+            $advertisement->getDate()->getHour(),
+            $advertisement->getDate()->getMinute(),
+            $idUser
          );
-
-         $reqPrepare = $this->dbh->prepare($sql_createAdvertisement);
-         $reqPrepare->execute($param_createAdvertisement);
       }
    }
 
@@ -49,13 +51,25 @@ class PageRepository extends BaseRepository
 
       $reqPrepare = $this->dbh->prepare($sql_getPage);
       $reqPrepare->execute($param_getPage);
-      $res_getPage = $reqPrepare->fetch(\PDO::FETCH_OBJ);
+      $res_getPage = $reqPrepare->fetchAll(\PDO::FETCH_OBJ);
 
-      foreach ($res_getPage as $advertisement) {
+      $page = new Page();
+      $page->setUrl($res_getPage[0]->url);
 
+      $advertisement = array();
+      foreach ($res_getPage as $advertisementBdd) {
+         $date = new Date(
+            $advertisementBdd->hour,
+            $advertisementBdd->minute
+         );
+         $advertisement[] = new Advertisement(
+            $date,
+            $advertisementBdd->title
+         );
       }
 
+      $page->setTbAvertisement($advertisement);
 
-
+      return $page;
    }
 }

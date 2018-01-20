@@ -23,7 +23,7 @@ CREATE TABLE `Page` (
 
 CREATE TABLE `Advertisement` (
    idAvertisement INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   title VARCHAR(25),
+   title VARCHAR(150),
    hour INTEGER,
    minute INTEGER,
    idPage INTEGER, 

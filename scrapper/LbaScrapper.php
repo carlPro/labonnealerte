@@ -2,9 +2,7 @@
 
 namespace labonnealerte\scrapper;
 
-use labonnealerte\classes\Advertisement;
-use labonnealerte\classes\Hour;
-use labonnealerte\classes\Page;
+use labonnealerte\classes\{Advertisement, Date, Page};
 
 class LbaScrapper extends BaseScrapper
 {
@@ -54,18 +52,18 @@ class LbaScrapper extends BaseScrapper
    public function getPage() {
       $page = new Page();
       $page->setUrl($this->url);
-      $page->setTbAvertissement($this->getAllAdvertisement());
+      $page->setTbAvertisement($this->getAllAdvertisement());
       return $page;
    }
 
    public function getAllAdvertisement() {
-      $hours = $this->getAllHour();
+      $dates = $this->getAllDate();
       $titles = $this->getAllTitle();
       $advertisements = array();
 
-      if (count($titles) == count($hours)) {
+      if (count($titles) == count($dates)) {
          for ($i = 0; $i < count($titles); $i++) {
-            $advertissement = new Advertisement($hours[$i], $titles[$i]);
+            $advertissement = new Advertisement($dates[$i], $titles[$i]);
             $advertisements[] = $advertissement;
          }
       }
@@ -73,20 +71,20 @@ class LbaScrapper extends BaseScrapper
    }
 
    // Get Date object who have been created in classes/ todo
-   public function getAllHour() {
-      $allHour = $this->getContentNodeToArray("//aside[@class='item_absolute']/p");
-      $allHour = $this->clearEmptyData($allHour);
-      $allHourRes = array();
+   public function getAllDate() {
+      $allDates = $this->getContentNodeToArray("//aside[@class='item_absolute']/p");
+      $allDates = $this->clearEmptyData($allDates);
+      $allDatesRes = array();
 
-      foreach ($allHour as $oneDateString) {
+      foreach ($allDates as $oneDateString) {
          $fullDateString = substr(trim($oneDateString), -5);
          $HourString = substr($fullDateString, 0, 2);
          $MinuteString = substr($fullDateString, -2);
          if (is_numeric($HourString) && is_numeric($MinuteString)) {
-            $allHourRes[] = new Hour($HourString, $MinuteString);
+            $allDatesRes[] = new Date($HourString, $MinuteString);
          }
       }
-      return $allHourRes; 
+      return $allDatesRes; 
    }
 
    public function getAllTitle() {

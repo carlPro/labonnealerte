@@ -6,17 +6,17 @@ use labonnealerte\classes\Hour;
 
 class Advertisement 
 {
-    private $hour;
+    private $date;
     private $title;
 
     /** 
      * Contructor
-     * @param int $ip_hour  
+     * @param int $ip_date  
      * @param int $ip_title 
      */
-    public function __construct($ip_hour, $ip_title) {
+    public function __construct($ip_date, $ip_title) {
         $this->title = $ip_title;
-        $this->hour = $ip_hour;
+        $this->date = $ip_date;
     }
 
     /**
@@ -36,10 +36,10 @@ class Advertisement
     }
 
     /**
-     * getHour
+     * getdate
      * @return int
      */
-    public function getHour() {
-        return $this->hour;
+    public function getDate() {
+        return $this->date;
     }
 }

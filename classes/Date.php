@@ -2,7 +2,7 @@
 
 namespace labonnealerte\classes;
 
-class Hour 
+class Date 
 {
     private $hour;
     private $minute;
