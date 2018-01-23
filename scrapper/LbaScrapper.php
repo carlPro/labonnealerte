@@ -62,7 +62,7 @@ class LbaScrapper extends BaseScrapper
       $advertisements = array();
 
       if (count($titles) == count($dates)) {
-         for ($i = 0; $i < count($titles); $i++) {
+         for ($i = 0; $i < 5; $i++) {
             $advertissement = new Advertisement($dates[$i], $titles[$i]);
             $advertisements[] = $advertissement;
          }
@@ -76,14 +76,15 @@ class LbaScrapper extends BaseScrapper
       $allDates = $this->clearEmptyData($allDates);
       $allDatesRes = array();
 
-      foreach ($allDates as $oneDateString) {
-         $fullDateString = substr(trim($oneDateString), -5);
+      for ($i = 0; $i < 5; $i++) {
+         $fullDateString = substr(trim($allDates[$i]), -5);
          $HourString = substr($fullDateString, 0, 2);
          $MinuteString = substr($fullDateString, -2);
          if (is_numeric($HourString) && is_numeric($MinuteString)) {
             $allDatesRes[] = new Date($HourString, $MinuteString);
          }
       }
+
       return $allDatesRes; 
    }
 
@@ -91,8 +92,8 @@ class LbaScrapper extends BaseScrapper
       $allTitle = $this->getContentNodeToArray("//section[@class='item_infos']/h2[@class='item_title']");
       $allTitleWithoutEmpty = $this->clearEmptyData($allTitle);
       $allTitleClean = array();
-      foreach ($allTitleWithoutEmpty as $titleWithoutEmpty) {
-         $allTitleClean[] = trim($titleWithoutEmpty);
+      for ($i = 0; $i < 5; $i++) {
+         $allTitleClean[] = trim($allTitleWithoutEmpty[$i]);
       }
       return $allTitleClean;
    }

@@ -16,16 +16,18 @@ $scrapper = new LbaScrapper($url);
 $userRepository = new UserRepository();
 $pageRepository = new PageRepository();
 
+ $pageInternet = $scrapper->getPage();
 if ($userRepository->isUserGotPage($idUser)) {
    $pageBdd = $pageRepository->getPage($idUser);
-   $pageInternet = $scrapper->getPage();
    if(Page::isSame($pageInternet, $pageBdd) == false) {
       $newAdverts = getNewAverts();
+
       // todo envoie de mail
       // todo enregistrement bdd
+      
    }
 } else {
-   $pageRepository->createPage($idUser, $page);
+   $pageRepository->createPage($idUser, $pageInternet);
 }
 
 // todo
