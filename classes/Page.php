@@ -17,8 +17,11 @@ class Page
         $this->tbAvertisement = $ip_tbAdvertisement;
     }
 
-    public function getTbAvertisement() {
-        return $this->tbAvertisement;
+    public function getTbAvertisement($limit = null) {
+        if (!is_null($limit)) {
+            $tbAdvertSlice = array_slice($this->tbAvertisement, 0, 4);
+        }
+        return $tbAdvertSlice ?? $this->tbAvertisement;
     }
 
     /**
