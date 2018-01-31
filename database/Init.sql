@@ -18,7 +18,7 @@ CREATE TABLE `Page` (
    idUser INT,
    url VARCHAR(200),
 
-   FOREIGN KEY(idUser) REFERENCES User(idUser)
+   FOREIGN KEY(idUser) REFERENCES User(idUser) ON DELETE CASCADE
 );
 
 CREATE TABLE `Advertisement` (
@@ -28,7 +28,7 @@ CREATE TABLE `Advertisement` (
    minute INTEGER,
    idPage INTEGER, 
 
-   FOREIGN KEY(idPage) REFERENCES Page(idPage)
+   FOREIGN KEY(idPage) REFERENCES Page(idPage) ON DELETE CASCADE
 );
 
 INSERT INTO `User`(name, mdp) VALUE("fasteel", "fasteel");

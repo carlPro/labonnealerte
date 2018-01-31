@@ -9,14 +9,14 @@ use labonnealerte\classes\Advertisement;
 class PageRepository extends BaseRepository
 {
    /**
-    * createPage
+    * Create a page
     * @param  int $idUser
     * @param  int $page   
     */
    public function createPage($idUser, $page) {
       $sql_createPage = "" .
-         "INSERT INTO Page(idUser, url) " .
-         "VALUES(:idUserSql, :urlSql)";
+         " INSERT INTO Page(idUser, url)" .
+         " VALUES(:idUserSql, :urlSql)";
 
       $param_createPage = array (
          ":idUserSql" => $idUser,
@@ -27,7 +27,6 @@ class PageRepository extends BaseRepository
       $reqPrepare->execute($param_createPage);
 
       foreach ($page->getTbAvertisement() as $advertisement) {
-
          $advertisementRepo = new AdvertisementRepository();
          $advertisementRepo->insertAdvertisement(
             $advertisement->getTitle(),
@@ -38,12 +37,17 @@ class PageRepository extends BaseRepository
       }
    }
 
+   /**
+    * Return user page
+    * @param  int $idUser 
+    * @return Page
+    */
    public function getPage($idUser) {
       $sql_getPage = "" .
-         "SELECT * " .
-         "FROM Page " . 
-         "INNER JOIN Advertisement ON Page.idPage = Advertisement.idPage " .
-         "WHERE Page.idUser=:idUserSql";
+         " SELECT *" .
+         " FROM Page" . 
+         " INNER JOIN Advertisement ON Page.idPage = Advertisement.idPage" .
+         " WHERE Page.idUser=:idUserSql";
 
       $param_getPage = array (
          ":idUserSql" => $idUser
@@ -71,5 +75,22 @@ class PageRepository extends BaseRepository
       $page->setTbAvertisement($advertisement);
 
       return $page;
+   }
+
+   /**
+    * Supprime une page
+    * @param  int $idUser
+    */
+   public function deletePage($idUser) {
+    $sql_deletePage = "" .
+      " DELETE FROM Page" .
+      " WHERE idUser = :iduser";
+
+    $param_deletePage = array (
+      "iduser" => $idUser
+    );
+
+    $reqPrepare = $this->dbh->prepare($sql_deletePage);
+    $reqPrepare->execute($param_deletePage);
    }
 }

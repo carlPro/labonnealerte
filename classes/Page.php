@@ -19,7 +19,7 @@ class Page
 
     public function getTbAvertisement($limit = null) {
         if (!is_null($limit)) {
-            $tbAdvertSlice = array_slice($this->tbAvertisement, 0, 4);
+            $tbAdvertSlice = array_slice($this->tbAvertisement, 0, $limit);
         }
         return $tbAdvertSlice ?? $this->tbAvertisement;
     }

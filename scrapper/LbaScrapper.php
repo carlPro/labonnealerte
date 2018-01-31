@@ -48,7 +48,10 @@ class LbaScrapper extends BaseScrapper
       }
    }
 
-   // Get Page with who have been created in classes/ todo
+   /**
+    * Get page object from url
+    * @return Page
+    */
    public function getPage() {
       $page = new Page();
       $page->setUrl($this->url);
@@ -56,13 +59,17 @@ class LbaScrapper extends BaseScrapper
       return $page;
    }
 
+   /**
+    * Get all advert of a page
+    * @return Advertisement[]
+    */
    public function getAllAdvertisement() {
       $dates = $this->getAllDate();
       $titles = $this->getAllTitle();
       $advertisements = array();
 
       if (count($titles) == count($dates)) {
-         for ($i = 0; $i < 5; $i++) {
+         for ($i = 0; $i < count($titles); $i++) {
             $advertissement = new Advertisement($dates[$i], $titles[$i]);
             $advertisements[] = $advertissement;
          }
@@ -70,35 +77,46 @@ class LbaScrapper extends BaseScrapper
       return $advertisements;
    }
 
-   // Get Date object who have been created in classes/ todo
+   /**
+    * Get all date of a page
+    * @return Date
+    */
    public function getAllDate() {
-      $allDates = $this->getContentNodeToArray("//aside[@class='item_absolute']/p");
-      $allDates = $this->clearEmptyData($allDates);
       $allDatesRes = array();
 
-      for ($i = 0; $i < 5; $i++) {
-         $fullDateString = substr(trim($allDates[$i]), -5);
+      $allDates = $this->getContentNodeToArray("//aside[@class='item_absolute']/p");
+      $allDates = $this->clearEmptyData($allDates);
+
+      foreach ($allDates as $oneDate) {
+         $fullDateString = substr(trim($oneDate), -5);
          $HourString = substr($fullDateString, 0, 2);
          $MinuteString = substr($fullDateString, -2);
          if (is_numeric($HourString) && is_numeric($MinuteString)) {
             $allDatesRes[] = new Date($HourString, $MinuteString);
          }
       }
-
       return $allDatesRes; 
    }
 
+   /**
+    * Get all title of a page
+    * @return string
+    */
    public function getAllTitle() {
+      $allTitleClean = array();
+
       $allTitle = $this->getContentNodeToArray("//section[@class='item_infos']/h2[@class='item_title']");
       $allTitleWithoutEmpty = $this->clearEmptyData($allTitle);
-      $allTitleClean = array();
-      for ($i = 0; $i < 5; $i++) {
-         $allTitleClean[] = trim($allTitleWithoutEmpty[$i]);
+
+      foreach ($allTitleWithoutEmpty as $oneTitleWithoutEmpty) {
+         $allTitleClean[] = trim($oneTitleWithoutEmpty);
       }
       return $allTitleClean;
    }
 
-
+   /**
+    * Clear var with blank space (like taylor swift)
+    */
    public function clearEmptyData($array) {
       $result = array();
       foreach ($array as $oneItem) {
@@ -109,6 +127,9 @@ class LbaScrapper extends BaseScrapper
       return $result;
    }
 
+   /**
+    * Detect if a var as caracter
+    */
    public function isWithoutCaracter($var) {
       // Delete this line if you want space(s) to count as not empty
       $var = trim($var);
@@ -118,10 +139,17 @@ class LbaScrapper extends BaseScrapper
    /********************
     * XPath management *
     ********************/
+
+   /**
+    * Get array of a node request
+    */
    public function getContentNodeToArray($expression) {
       return $this->xpathQueryToArray($this->xpath->query($expression));
    }
 
+   /**
+    * Return tb of elements
+    */
    public function xpathQueryToArray($elements) {
       $tb = array();
       if (!is_null($elements)) {

@@ -4,6 +4,13 @@ namespace labonnealerte\database\repository;
 
 class AdvertisementRepository extends BaseRepository
 {
+   /**
+    * Save one advert
+    * @param  String $title  
+    * @param  Int $hour   
+    * @param  Int $minute 
+    * @param  Int $idPage 
+    */
    public function insertAdvertisement($title, $hour, $minute, $idPage) {
       $sql_createAdvertisement = "" .
          "INSERT INTO Advertisement(title, hour, minute, idPage) " .
