@@ -2,28 +2,60 @@
 
 namespace labonnealerte\classes;
 
+use labonnealerte\classes\{Advertisement, Date};
+
 class Page 
 {
-    private $tbAvertissement;
+    private $tbAvertisement;
     private $url;
 
-    public function __construct() {
-
+    /** 
+     * setTbAdvertisement
+     * @param array $ip_tbAdvertisement
+     */
+    public function setTbAvertisement($ip_tbAdvertisement) {
+        $this->tbAvertisement = $ip_tbAdvertisement;
     }
 
-    public function addAvertissement() {
-
+    public function getTbAvertisement($limit = null) {
+        if (!is_null($limit)) {
+            $tbAdvertSlice = array_slice($this->tbAvertisement, 0, $limit);
+        }
+        return $tbAdvertSlice ?? $this->tbAvertisement;
     }
 
+    /**
+     * setUrl
+     * @param string $ip_url
+     */
     public function setUrl($ip_url) {
         $this->url = $ip_url;
     }
 
+    /**
+     * getUrl
+     * @return string
+     */
     public function getUrl() {
         return $this->url;
     }
 
-    public function test() {
-        return "c'est une objet page";
+    public static function isSame($pageBdd, $pageInternet) {
+        if ($pageBdd->getUrl() != $pageInternet->getUrl()) {
+            return false;
+        }
+
+        $pageBddAvertisement = $pageBdd->getTbAvertisement();
+        $pageInternetAvertisement = $pageInternet->getTbAvertisement();
+
+        foreach ($pageBddAvertisement as $key => $avertisementBdd) {
+            if ($avertisementBdd->getDate()->getHour() != $pageInternetAvertisement[$key]->getDate()->getHour()
+                || $avertisementBdd->getDate()->getMinute() != $pageInternetAvertisement[$key]->getDate()->getMinute()
+                || $avertisementBdd->getTitle() != $pageInternetAvertisement[$key]->getTitle()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

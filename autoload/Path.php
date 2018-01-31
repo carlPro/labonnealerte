@@ -1,6 +1,7 @@
 <?php
 
-define("__ROOT_PATH__", "/var/www/html/");
+// Parent path directory "labonnealerte", in linux : /var/www/html/
+define("__ROOT_PATH__", dirname(dirname(dirname(__FILE__))) . "/");
 define("__LBA__", "labonnealerte/");
 define("__LBA_AUTOLOAD_DIR__", "autoload/");
 define("__LBA_DATABASE_DIR__", "database/");
