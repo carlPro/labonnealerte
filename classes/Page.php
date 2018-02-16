@@ -17,11 +17,8 @@ class Page
         $this->tbAvertisement = $ip_tbAdvertisement;
     }
 
-    public function getTbAvertisement($limit = null) {
-        if (!is_null($limit)) {
-            $tbAdvertSlice = array_slice($this->tbAvertisement, 0, $limit);
-        }
-        return $tbAdvertSlice ?? $this->tbAvertisement;
+    public function getTbAvertisement() {
+        return $this->tbAvertisement;
     }
 
     /**
@@ -49,9 +46,7 @@ class Page
         $pageInternetAvertisement = $pageInternet->getTbAvertisement();
 
         foreach ($pageBddAvertisement as $key => $avertisementBdd) {
-            if ($avertisementBdd->getDate()->getHour() != $pageInternetAvertisement[$key]->getDate()->getHour()
-                || $avertisementBdd->getDate()->getMinute() != $pageInternetAvertisement[$key]->getDate()->getMinute()
-                || $avertisementBdd->getTitle() != $pageInternetAvertisement[$key]->getTitle()) {
+            if ($avertisementBdd->getUrl() != $pageInternetAvertisement[$key]->getUrl()) {
                 return false;
             }
         }

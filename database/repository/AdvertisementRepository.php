@@ -11,10 +11,10 @@ class AdvertisementRepository extends BaseRepository
     * @param  Int $minute 
     * @param  Int $idPage 
     */
-   public function insertAdvertisement($title, $hour, $minute, $idPage) {
+   public function insertAdvertisement($title, $hour, $minute, $idPage, $url) {
       $sql_createAdvertisement = "" .
-         "INSERT INTO Advertisement(title, hour, minute, idPage) " .
-         "SELECT :titleSql, :hourSql, :minuteSql, `idPage` " .
+         "INSERT INTO Advertisement(title, hour, minute, idPage, url) " .
+         "SELECT :titleSql, :hourSql, :minuteSql, `idPage` , :url " .
          "FROM Page " .
          "WHERE Page.idUser = :idUser";
 
@@ -22,7 +22,8 @@ class AdvertisementRepository extends BaseRepository
          ":titleSql" => $title,
          ":hourSql" => $hour,
          ":minuteSql" => $minute,
-         ":idUser" => $idPage
+         ":idUser" => $idPage,
+         ":url" => $url
       );
 
       $reqPrepare = $this->dbh->prepare($sql_createAdvertisement);

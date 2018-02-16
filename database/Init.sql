@@ -26,7 +26,8 @@ CREATE TABLE `Advertisement` (
    title VARCHAR(150),
    hour INTEGER,
    minute INTEGER,
-   idPage INTEGER, 
+   url VARCHAR(150),
+   idPage INTEGER,
 
    FOREIGN KEY(idPage) REFERENCES Page(idPage) ON DELETE CASCADE
 );

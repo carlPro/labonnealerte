@@ -66,11 +66,12 @@ class LbaScrapper extends BaseScrapper
    public function getAllAdvertisement() {
       $dates = $this->getAllDate();
       $titles = $this->getAllTitle();
+      $urls = $this->getAllUrl();
       $advertisements = array();
 
-      if (count($titles) == count($dates)) {
+      if (count($titles) == count($dates) && count($titles) == count($urls)) {
          for ($i = 0; $i < count($titles); $i++) {
-            $advertissement = new Advertisement($dates[$i], $titles[$i]);
+            $advertissement = new Advertisement($dates[$i], $titles[$i], $urls[$i]);
             $advertisements[] = $advertissement;
          }
       }
@@ -112,6 +113,18 @@ class LbaScrapper extends BaseScrapper
          $allTitleClean[] = trim($oneTitleWithoutEmpty);
       }
       return $allTitleClean;
+   }
+
+   public function getAllUrl() {
+      $allUrlClean = array();
+
+      $allUrl = $this->getContentNodeToArray("//li[@itemtype='http://schema.org/Offer']/a/@href");
+      $allUrlWithoutEmpty = $this->clearEmptyData($allUrl);
+
+      foreach ($allUrlWithoutEmpty as $key => $oneUrl) {
+        $allUrlWithoutEmpty[$key] = substr(trim($oneUrl), 2);
+      }
+      return $allUrlWithoutEmpty;
    }
 
    /**

@@ -25,14 +25,14 @@ class PageRepository extends BaseRepository
 
       $reqPrepare = $this->dbh->prepare($sql_createPage);
       $reqPrepare->execute($param_createPage);
-
       foreach ($page->getTbAvertisement() as $advertisement) {
          $advertisementRepo = new AdvertisementRepository();
          $advertisementRepo->insertAdvertisement(
             $advertisement->getTitle(),
             $advertisement->getDate()->getHour(),
             $advertisement->getDate()->getMinute(),
-            $idUser
+            $idUser,
+            $advertisement->getUrl()
          );
       }
    }
@@ -44,7 +44,7 @@ class PageRepository extends BaseRepository
     */
    public function getPage($idUser) {
       $sql_getPage = "" .
-         " SELECT *" .
+         " SELECT Advertisement.title, Advertisement.hour, Advertisement.minute, Advertisement.url as urlAdvert, Page.url as urlPage" .
          " FROM Page" . 
          " INNER JOIN Advertisement ON Page.idPage = Advertisement.idPage" .
          " WHERE Page.idUser=:idUserSql";
@@ -55,20 +55,21 @@ class PageRepository extends BaseRepository
 
       $reqPrepare = $this->dbh->prepare($sql_getPage);
       $reqPrepare->execute($param_getPage);
-      $res_getPage = $reqPrepare->fetchAll(\PDO::FETCH_OBJ);
+      $advertisementsBdd = $reqPrepare->fetchAll(\PDO::FETCH_OBJ);
 
       $page = new Page();
-      $page->setUrl($res_getPage[0]->url);
+      $page->setUrl($advertisementsBdd[0]->urlPage);
 
       $advertisement = array();
-      foreach ($res_getPage as $advertisementBdd) {
+      foreach ($advertisementsBdd as $advertisementBdd) {
          $date = new Date(
             $advertisementBdd->hour,
             $advertisementBdd->minute
          );
          $advertisement[] = new Advertisement(
             $date,
-            $advertisementBdd->title
+            $advertisementBdd->title,
+            $advertisementBdd->urlAdvert
          );
       }
 
