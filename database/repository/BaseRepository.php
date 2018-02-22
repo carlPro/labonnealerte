@@ -4,14 +4,15 @@ namespace labonnealerte\database\repository;
 
 use labonnealerte\database\DatabaseConnect;
 
-class BaseRepository
-{
-   public $dbh;
+class BaseRepository {
 
-   /**
-    * Construct database object
-    */
-   public function __construct() {
-      $this->dbh = DatabaseConnect::getConnection();
-   }
+  public $dbh;
+
+  /**
+   * Construct database object
+   */
+  public function __construct() {
+    $this->dbh = DatabaseConnect::getConnection();
+  }
+
 }

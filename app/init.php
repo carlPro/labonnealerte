@@ -10,7 +10,6 @@ namespace labonnealerte\app;
  *    - Autoloader
  *    - Constant database
  */
-
 require dirname(dirname(__FILE__)) . "/autoload/Path.php";
 require __LBA_AUTOLOAD__ . "ClassAutoloader.php";
 require __LBA_DATABASE__ . "Config.php";

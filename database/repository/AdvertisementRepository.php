@@ -2,31 +2,32 @@
 
 namespace labonnealerte\database\repository;
 
-class AdvertisementRepository extends BaseRepository
-{
-   /**
-    * Save one advert
-    * @param  String $title  
-    * @param  Int $hour   
-    * @param  Int $minute 
-    * @param  Int $idPage 
-    */
-   public function insertAdvertisement($title, $hour, $minute, $idPage, $url) {
-      $sql_createAdvertisement = "" .
-         "INSERT INTO Advertisement(title, hour, minute, idPage, url) " .
-         "SELECT :titleSql, :hourSql, :minuteSql, `idPage` , :url " .
-         "FROM Page " .
-         "WHERE Page.idUser = :idUser";
+class AdvertisementRepository extends BaseRepository {
 
-      $param_createAdvertisement = array (
-         ":titleSql" => $title,
-         ":hourSql" => $hour,
-         ":minuteSql" => $minute,
-         ":idUser" => $idPage,
-         ":url" => $url
-      );
+  /**
+   * Save one advert
+   * @param  String $title  
+   * @param  Int $hour   
+   * @param  Int $minute 
+   * @param  Int $idPage 
+   */
+  public function insertAdvertisement($title, $hour, $minute, $idPage, $url) {
+    $sql_createAdvertisement = "" .
+            "INSERT INTO Advertisement(title, hour, minute, idPage, url) " .
+            "SELECT :titleSql, :hourSql, :minuteSql, `idPage` , :url " .
+            "FROM Page " .
+            "WHERE Page.idUser = :idUser";
 
-      $reqPrepare = $this->dbh->prepare($sql_createAdvertisement);
-      $reqPrepare->execute($param_createAdvertisement);
-   }
+    $param_createAdvertisement = array(
+        ":titleSql" => $title,
+        ":hourSql" => $hour,
+        ":minuteSql" => $minute,
+        ":idUser" => $idPage,
+        ":url" => $url
+    );
+
+    $reqPrepare = $this->dbh->prepare($sql_createAdvertisement);
+    $reqPrepare->execute($param_createAdvertisement);
+  }
+
 }

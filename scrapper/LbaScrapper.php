@@ -2,178 +2,105 @@
 
 namespace labonnealerte\scrapper;
 
-use labonnealerte\classes\{Advertisement, Date, Page};
+use labonnealerte\classes\{
+  Advertisement,
+  Date,
+  Page
+};
+use labonnealerte\scrapper\utils\{
+  LbaXpath,
+  Formating
+};
+// todo : construire l'objet page en entier
+// Remplacer les get par build
+class LbaScrapper {
 
-class LbaScrapper extends BaseScrapper
-{
-   private $url;
-   private $xpath;
-   private $page;
+  private $url;
+  private $formating;
+  private $xpath;
+  private $page;
 
-   /******************************************************************************
-    * Contruct the dom object with current url and build the DomX for scrapping, * 
-    * build also the static curl object                                          *
-    ******************************************************************************/
-   public function __construct($ip_url) {
-      parent::__construct();
-      $this->url = $ip_url;
+  /*   * ****************************************************************************
+   * Contruct the dom object with current url and build the DomX for scrapping, * 
+   * build also the static curl object                                          *
+   * **************************************************************************** */
 
-      // For killing html5 errors when I load HTML
-      libxml_use_internal_errors(true);
+  public function __construct($ip_url) {
+    $this->url = $ip_url;
+    $this->xpath = new LbaXpath($ip_url);
+    $this->formating = new Formating();
+    $this->page = new Page();
+  }
 
-      self::$dom->loadHtml($this->getContent());
+  /**
+   * Get page object from url
+   * @return Page
+   */
+  public function getPage() {
+    $this->page->setUrl($this->url);
+    $this->page->setTbAvertisement($this->getAllAdvertisement());
+    return $this->page;
+  }
 
-      // For killing html5 errors when I capload HTML
-      libxml_clear_errors();
+  /**
+   * Get all advert of a page
+   * @return Advertisement[]
+   */
+  public function getAllAdvertisement() {
+    $dates = $this->getAllDate();
+    $titles = $this->getAllTitle();
+    $urls = $this->getAllUrl();
+    $advertisements = array();
 
-      $this->xpath = new \DOMXPath(self::$dom);
-   }
-
-   /******************************************
-    * Return content of the current web page *
-    ******************************************/
-   public function getContent() {
-      curl_setopt(self::$curlObject, CURLOPT_URL, $this->url);
-      // Get request content
-      curl_setopt(self::$curlObject, CURLOPT_RETURNTRANSFER, true);
-      // No header
-      curl_setopt(self::$curlObject, CURLOPT_HEADER, false);
-      // Get response
-      $output = curl_exec(self::$curlObject);
-
-      if ($output === false) {
-         return trigger_error('Erreur curl : ' . curl_error(self::$curlObject), E_USER_WARNING);
-      } else {
-         return $output;
+    if (count($titles) == count($dates) && count($titles) == count($urls)) {
+      for ($i = 0; $i < count($titles); $i++) {
+        $advertissement = new Advertisement($dates[$i], $titles[$i], $urls[$i]);
+        $advertisements[] = $advertissement;
       }
-   }
+    }
+    return $advertisements;
+  }
 
-   /**
-    * Get page object from url
-    * @return Page
-    */
-   public function getPage() {
-      $page = new Page();
-      $page->setUrl($this->url);
-      $page->setTbAvertisement($this->getAllAdvertisement());
-      return $page;
-   }
+  /**
+   * Get all date of a page
+   * @return Date
+   */
+  public function getAllDate() {
+    $allDates = $this->xpath->getContentNodeToArray("//aside[@class='item_absolute']/p");
+    $allDates = $this->formating->clearEmptyData($allDates);
 
-   /**
-    * Get all advert of a page
-    * @return Advertisement[]
-    */
-   public function getAllAdvertisement() {
-      $dates = $this->getAllDate();
-      $titles = $this->getAllTitle();
-      $urls = $this->getAllUrl();
-      $advertisements = array();
-
-      if (count($titles) == count($dates) && count($titles) == count($urls)) {
-         for ($i = 0; $i < count($titles); $i++) {
-            $advertissement = new Advertisement($dates[$i], $titles[$i], $urls[$i]);
-            $advertisements[] = $advertissement;
-         }
+    foreach ($allDates as $key => $oneDate) {
+      $fullDateString = substr(trim($oneDate), -5);
+      $HourString = substr($fullDateString, 0, 2);
+      $MinuteString = substr($fullDateString, -2);
+      if (is_numeric($HourString) && is_numeric($MinuteString)) {
+        $allDates[$key] = new Date($HourString, $MinuteString);
       }
-      return $advertisements;
-   }
+    }
+    return $allDates;
+  }
 
-   /**
-    * Get all date of a page
-    * @return Date
-    */
-   public function getAllDate() {
-      $allDatesRes = array();
+  /**
+   * Get all title of a page
+   * @return string
+   */
+  public function getAllTitle() {
+    $allTitle = $this->xpath->getContentNodeToArray("//section[@class='item_infos']/h2[@class='item_title']");
+    $allTitle = $this->formating->clearEmptyData($allTitle);
+   
+    foreach ($allTitle as $key => $oneTitleWithoutEmpty) {
+      $allTitle[$key] = trim($oneTitleWithoutEmpty);
+    }
+    return $allTitle;
+  }
 
-      $allDates = $this->getContentNodeToArray("//aside[@class='item_absolute']/p");
-      $allDates = $this->clearEmptyData($allDates);
+  public function getAllUrl() {
+    $allUrl = $this->xpath->getContentNodeToArray("//li[@itemtype='http://schema.org/Offer']/a/@href");
+    $allUrl = $this->formating->clearEmptyData($allUrl);
 
-      foreach ($allDates as $oneDate) {
-         $fullDateString = substr(trim($oneDate), -5);
-         $HourString = substr($fullDateString, 0, 2);
-         $MinuteString = substr($fullDateString, -2);
-         if (is_numeric($HourString) && is_numeric($MinuteString)) {
-            $allDatesRes[] = new Date($HourString, $MinuteString);
-         }
-      }
-      return $allDatesRes; 
-   }
-
-   /**
-    * Get all title of a page
-    * @return string
-    */
-   public function getAllTitle() {
-      $allTitleClean = array();
-
-      $allTitle = $this->getContentNodeToArray("//section[@class='item_infos']/h2[@class='item_title']");
-      $allTitleWithoutEmpty = $this->clearEmptyData($allTitle);
-
-      foreach ($allTitleWithoutEmpty as $oneTitleWithoutEmpty) {
-         $allTitleClean[] = trim($oneTitleWithoutEmpty);
-      }
-      return $allTitleClean;
-   }
-
-   public function getAllUrl() {
-      $allUrlClean = array();
-
-      $allUrl = $this->getContentNodeToArray("//li[@itemtype='http://schema.org/Offer']/a/@href");
-      $allUrlWithoutEmpty = $this->clearEmptyData($allUrl);
-
-      foreach ($allUrlWithoutEmpty as $key => $oneUrl) {
-        $allUrlWithoutEmpty[$key] = substr(trim($oneUrl), 2);
-      }
-      return $allUrlWithoutEmpty;
-   }
-
-   /**
-    * Clear var with blank space (like taylor swift)
-    */
-   public function clearEmptyData($array) {
-      $result = array();
-      foreach ($array as $oneItem) {
-         if (!$this->isWithoutCaracter($oneItem)) {
-            $result[] = $oneItem;
-         }
-      }
-      return $result;
-   }
-
-   /**
-    * Detect if a var as caracter
-    */
-   public function isWithoutCaracter($var) {
-      // Delete this line if you want space(s) to count as not empty
-      $var = trim($var);
-      return (isset($var) === true && $var === '') ? true : false;
-   }
-
-   /********************
-    * XPath management *
-    ********************/
-
-   /**
-    * Get array of a node request
-    */
-   public function getContentNodeToArray($expression) {
-      return $this->xpathQueryToArray($this->xpath->query($expression));
-   }
-
-   /**
-    * Return tb of elements
-    */
-   public function xpathQueryToArray($elements) {
-      $tb = array();
-      if (!is_null($elements)) {
-         foreach ($elements as $element) {
-            $nodes = $element->childNodes;
-            foreach ($nodes as $node) {
-               $tb[] = $node->nodeValue . "\n";
-            }
-         }
-      }
-      return $tb;
-   }
+    foreach ($allUrl as $key => $oneUrl) {
+      $allUrl[$key] = substr(trim($oneUrl), 2);
+    }
+    return $allUrl;
+  }
 }
-
