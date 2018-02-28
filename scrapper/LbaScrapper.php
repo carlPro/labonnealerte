@@ -11,24 +11,16 @@ use labonnealerte\scrapper\utils\{
   LbaXpath,
   Formating
 };
-// todo : construire l'objet page en entier
-// Remplacer les get par build
+
 class LbaScrapper {
 
   private $url;
-  private $formating;
   private $xpath;
   private $page;
-
-  /*   * ****************************************************************************
-   * Contruct the dom object with current url and build the DomX for scrapping, * 
-   * build also the static curl object                                          *
-   * **************************************************************************** */
 
   public function __construct($ip_url) {
     $this->url = $ip_url;
     $this->xpath = new LbaXpath($ip_url);
-    $this->formating = new Formating();
     $this->page = new Page();
   }
 
@@ -39,6 +31,7 @@ class LbaScrapper {
   public function getPage() {
     $this->page->setUrl($this->url);
     $this->page->setTbAvertisement($this->getAllAdvertisement());
+
     return $this->page;
   }
 
@@ -50,6 +43,7 @@ class LbaScrapper {
     $dates = $this->getAllDate();
     $titles = $this->getAllTitle();
     $urls = $this->getAllUrl();
+
     $advertisements = array();
 
     if (count($titles) == count($dates) && count($titles) == count($urls)) {
@@ -57,6 +51,8 @@ class LbaScrapper {
         $advertissement = new Advertisement($dates[$i], $titles[$i], $urls[$i]);
         $advertisements[] = $advertissement;
       }
+    } else {
+      echo "Oups ! Number off dates titles and urls doesn't match"; 
     }
     return $advertisements;
   }
@@ -66,18 +62,30 @@ class LbaScrapper {
    * @return Date
    */
   public function getAllDate() {
-    $allDates = $this->xpath->getContentNodeToArray("//aside[@class='item_absolute']/p");
-    $allDates = $this->formating->clearEmptyData($allDates);
+    $allDatesFromUrl = Formating::clearEmptyData($this->xpath->getContentNodeToArray(Balise::date));
 
-    foreach ($allDates as $key => $oneDate) {
-      $fullDateString = substr(trim($oneDate), -5);
-      $HourString = substr($fullDateString, 0, 2);
-      $MinuteString = substr($fullDateString, -2);
+    foreach ($allDatesFromUrl as $key => $oneDateFromUrl) {
+      $dateString = $this->getDateString($oneDateFromUrl);
+      $HourString = $this->getHourString($dateString);
+      $MinuteString = $this->getMinuteString($dateString);
+      
       if (is_numeric($HourString) && is_numeric($MinuteString)) {
-        $allDates[$key] = new Date($HourString, $MinuteString);
+        $allDatesFromUrl[$key] = new Date($HourString, $MinuteString);
       }
     }
-    return $allDates;
+    return $allDatesFromUrl;
+  }
+  
+  public function getDateString($dateFromUrl) {
+    return substr(trim($dateFromUrl), -5);
+  }
+  
+  public function getHourString($dateString) {
+    return substr($dateString, 0, 2);
+  }
+  
+  public function getMinuteString($dateString) {
+    return substr($dateString, -2);
   }
 
   /**
@@ -85,8 +93,8 @@ class LbaScrapper {
    * @return string
    */
   public function getAllTitle() {
-    $allTitle = $this->xpath->getContentNodeToArray("//section[@class='item_infos']/h2[@class='item_title']");
-    $allTitle = $this->formating->clearEmptyData($allTitle);
+    $allTitle = $this->xpath->getContentNodeToArray(Balise::title);
+    $allTitle = Formating::clearEmptyData($allTitle);
    
     foreach ($allTitle as $key => $oneTitleWithoutEmpty) {
       $allTitle[$key] = trim($oneTitleWithoutEmpty);
@@ -95,8 +103,8 @@ class LbaScrapper {
   }
 
   public function getAllUrl() {
-    $allUrl = $this->xpath->getContentNodeToArray("//li[@itemtype='http://schema.org/Offer']/a/@href");
-    $allUrl = $this->formating->clearEmptyData($allUrl);
+    $allUrl = $this->xpath->getContentNodeToArray(Balise::url);
+    $allUrl = Formating::clearEmptyData($allUrl);
 
     foreach ($allUrl as $key => $oneUrl) {
       $allUrl[$key] = substr(trim($oneUrl), 2);

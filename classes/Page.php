@@ -17,11 +17,13 @@ class Page {
       return false;
     }
 
-    $pageBddAvertisement = $pageBdd->getTbAvertisement();
-    $pageInternetAvertisement = $pageInternet->getTbAvertisement();
+    $tbBddAvertisement = $pageBdd->getTbAvertisement();
+    $tbInternetAvertisement = $pageInternet->getTbAvertisement();
 
-    foreach ($pageBddAvertisement as $key => $avertisementBdd) {
-      if ($avertisementBdd->getUrl() != $pageInternetAvertisement[$key]->getUrl()) {
+    foreach ($tbBddAvertisement as $key => $bddAdvert) {
+      $internetAdvert = $tbInternetAvertisement[$key];
+      
+      if ($bddAdvert->getUrl() != $internetAdvert->getUrl()) {
         return false;
       }
     }
@@ -34,10 +36,12 @@ class Page {
   */
   public static function getNewAverts($pageBdd, $pageInternet) {
     $newAdverts = array();
-    $tbAvertBdd = $pageBdd->getTbAvertisement();
-    $tbAdvertInternet = $pageInternet->getTbAvertisement();
-    foreach ($tbAdvertInternet as $internetAdvert) {
-      if (!in_array($internetAdvert, $tbAvertBdd)) {
+    $tbBddAvertisement = $pageBdd->getTbAvertisement();
+    $tbInternetAvertisement = $pageInternet->getTbAvertisement();
+    
+    foreach ($tbInternetAvertisement as $internetAdvert) {
+      
+      if (in_array($internetAdvert, $tbBddAvertisement) == false) {
         $newAdverts[] = $internetAdvert;
       }
     }
@@ -71,8 +75,8 @@ class Page {
   public function getUrl() {
     return $this->url;
   }
-  
+
   public function addAdvert($advert) {
-    
+    $this->tbAvertisement[] = $advert;
   }
 }
